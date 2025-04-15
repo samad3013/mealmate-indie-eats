@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { UtensilsCrossed, Mail, ArrowLeft } from "lucide-react";
 import { Layout } from "@/components/layout";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -39,10 +40,13 @@ const ForgotPassword = () => {
   const onSubmit = async (values: ForgotPasswordValues) => {
     setIsLoading(true);
     try {
-      // This would call Supabase password reset in a real implementation
-      console.log("Forgot password email:", values.email);
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
+        redirectTo: window.location.origin + '/reset-password',
+      });
+      
+      if (error) {
+        throw error;
+      }
       
       setIsSubmitted(true);
       toast({
@@ -53,7 +57,7 @@ const ForgotPassword = () => {
       console.error("Forgot password error:", error);
       toast({
         title: "Something went wrong",
-        description: "Please try again later.",
+        description: error.message || "Please try again later.",
         variant: "destructive",
       });
     } finally {

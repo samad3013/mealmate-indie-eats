@@ -3,7 +3,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/select";
 import { UtensilsCrossed, User, Mail, Lock, MapPin } from "lucide-react";
 import { Layout } from "@/components/layout";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -38,6 +40,7 @@ const Register = () => {
   const [searchParams] = useSearchParams();
   const initialRole = searchParams.get("role") === "cook" ? "cook" : "student";
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
@@ -53,13 +56,54 @@ const Register = () => {
   const onSubmit = async (values: RegisterValues) => {
     setIsLoading(true);
     try {
-      // This would call Supabase authentication in a real implementation
-      console.log("Register values:", values);
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // Navigate user after registration
+      // Sign up with Supabase
+      const { data, error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+        options: {
+          data: {
+            first_name: values.name.split(' ')[0] || '',
+            last_name: values.name.split(' ').slice(1).join(' ') || '',
+            role: values.role === "cook" ? "cook" : "customer", // Map student to customer
+            location: values.location
+          }
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.user) {
+        // If user is a cook, create a cook profile
+        if (values.role === "cook" && data.user.id) {
+          const { error: cookError } = await supabase
+            .from('cooks')
+            .insert({
+              id: data.user.id,
+              location_address: values.location,
+              hourly_rate: 0, // Default value
+            });
+
+          if (cookError) {
+            console.error("Error creating cook profile:", cookError);
+          }
+        }
+
+        toast({
+          title: "Registration successful",
+          description: "You have successfully registered. You can now login.",
+        });
+        
+        navigate("/login");
+      }
     } catch (error) {
       console.error("Registration error:", error);
+      toast({
+        title: "Registration failed",
+        description: error.message || "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
