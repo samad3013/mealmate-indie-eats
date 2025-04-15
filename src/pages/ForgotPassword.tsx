@@ -3,7 +3,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -28,26 +28,37 @@ type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const form = useForm<ForgotPasswordValues>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
-      email: "",
+      email: "sy9129@srmist.edu.in", // Pre-fill admin email
     },
   });
 
   const onSubmit = async (values: ForgotPasswordValues) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
-        redirectTo: window.location.origin + '/reset-password',
+      const { data, error } = await supabase.auth.resetPasswordForEmail(values.email, {
+        redirectTo: `${window.location.origin}/reset-password`,
       });
       
       if (error) {
         throw error;
       }
       
+      // Special handling for admin user
+      if (values.email === "sy9129@srmist.edu.in") {
+        toast({
+          title: "Password Reset Initiated",
+          description: "Use the link sent to sy9129@srmist.edu.in to set your admin password.",
+        });
+        navigate('/login');
+        return;
+      }
+
       setIsSubmitted(true);
       toast({
         title: "Password reset link sent",
