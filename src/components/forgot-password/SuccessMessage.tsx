@@ -12,6 +12,9 @@ export const SuccessMessage = ({ onTryAgain }: SuccessMessageProps) => {
         <p className="text-sm">
           We've sent a password reset link to your email. Please check your inbox and spam folder.
         </p>
+        <p className="text-sm mt-2">
+          If you don't receive the email, you can try again or use a different email address.
+        </p>
       </div>
       <Button 
         variant="outline" 
