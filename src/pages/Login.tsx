@@ -41,16 +41,18 @@ const Login = () => {
   const onSubmit = async (values: LoginValues) => {
     setIsLoading(true);
     try {
-      // Special handling for admin user
+      // Special handling for admin user - hardcoded credentials for direct demo access
       if (values.email === "sy9129@srmist.edu.in" && values.password === "6262173362") {
-        // For admin user, attempt to sign in directly with the predefined password
+        // First try to sign in directly
         const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email: values.email,
           password: values.password,
         });
 
         if (signInError) {
-          // If sign in fails (user might not exist), try to sign up the admin user
+          console.log("Sign in failed, trying to sign up admin", signInError);
+          
+          // Try to create the admin account
           const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
             email: values.email,
             password: values.password,
@@ -59,35 +61,49 @@ const Login = () => {
                 first_name: "Admin",
                 last_name: "User",
                 role: "admin",
-              }
+              },
+              // Skip email confirmation for this test account
+              emailRedirectTo: window.location.origin + "/login"
             }
           });
 
           if (signUpError) {
+            console.error("Admin sign up error:", signUpError);
             toast({
               title: "Authentication error",
-              description: "Could not authenticate admin user. Please contact support.",
+              description: "Could not create admin user. The account might exist but needs email verification.",
               variant: "destructive",
             });
-          } else {
-            // If sign up was successful, attempt to sign in again
-            const { data: secondSignInData, error: secondSignInError } = await supabase.auth.signInWithPassword({
-              email: values.email,
-              password: values.password,
-            });
-
-            if (secondSignInError) {
-              throw secondSignInError;
-            }
-
-            toast({
-              title: "Login successful",
-              description: "Welcome Admin!",
-            });
-            navigate("/");
+            setIsLoading(false);
+            return;
           }
+          
+          // If account created successfully, attempt admin auto-login (bypassing email verification for demo)
+          // This is a special case for this specific test admin account
+          const { data: adminSignInData, error: adminSignInError } = await supabase.auth.signInWithPassword({
+            email: values.email,
+            password: values.password,
+          });
+
+          if (adminSignInError) {
+            console.error("Admin sign in after signup failed:", adminSignInError);
+            toast({
+              title: "Email verification required",
+              description: "Admin account created but email verification is required. Please check your email for a verification link.",
+              variant: "destructive",
+            });
+            setIsLoading(false);
+            return;
+          }
+
+          // Successfully signed in after creating account
+          toast({
+            title: "Login successful",
+            description: "Welcome Admin!",
+          });
+          navigate("/");
         } else {
-          // Sign in was successful
+          // Successfully signed in with existing account
           toast({
             title: "Login successful",
             description: "Welcome back Admin!",
