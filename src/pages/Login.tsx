@@ -41,21 +41,77 @@ const Login = () => {
   const onSubmit = async (values: LoginValues) => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      if (data.user) {
-        toast({
-          title: "Login successful",
-          description: "Welcome back!",
+      // Special handling for admin user
+      if (values.email === "sy9129@srmist.edu.in" && values.password === "6262173362") {
+        // For admin user, attempt to sign in directly with the predefined password
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email: values.email,
+          password: values.password,
         });
-        navigate("/");
+
+        if (signInError) {
+          // If sign in fails (user might not exist), try to sign up the admin user
+          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+            email: values.email,
+            password: values.password,
+            options: {
+              data: {
+                first_name: "Admin",
+                last_name: "User",
+                role: "admin",
+              }
+            }
+          });
+
+          if (signUpError) {
+            toast({
+              title: "Authentication error",
+              description: "Could not authenticate admin user. Please contact support.",
+              variant: "destructive",
+            });
+          } else {
+            // If sign up was successful, attempt to sign in again
+            const { data: secondSignInData, error: secondSignInError } = await supabase.auth.signInWithPassword({
+              email: values.email,
+              password: values.password,
+            });
+
+            if (secondSignInError) {
+              throw secondSignInError;
+            }
+
+            toast({
+              title: "Login successful",
+              description: "Welcome Admin!",
+            });
+            navigate("/");
+          }
+        } else {
+          // Sign in was successful
+          toast({
+            title: "Login successful",
+            description: "Welcome back Admin!",
+          });
+          navigate("/");
+        }
+      } else {
+        // Regular user login
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: values.email,
+          password: values.password,
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        if (data.user) {
+          toast({
+            title: "Login successful",
+            description: "Welcome back!",
+          });
+          navigate("/");
+        }
       }
     } catch (error) {
       console.error("Login error:", error);
