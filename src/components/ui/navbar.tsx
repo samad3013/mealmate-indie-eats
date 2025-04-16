@@ -1,14 +1,15 @@
 
-import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { UtensilsCrossed, User, ShoppingCart, LogIn } from "lucide-react";
+import { UtensilsCrossed, User, ShoppingCart, LogIn, LogOut, ChefHat } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export function Navbar() {
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user, isLoading } = useAuth();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -56,6 +57,15 @@ export function Navbar() {
             Browse Meals
           </Link>
           <Link 
+            to="/cooks" 
+            className={cn(
+              "text-sm font-medium hover:text-primary transition-colors",
+              location.pathname.startsWith("/cooks") && "text-primary"
+            )}
+          >
+            Hire Cooks
+          </Link>
+          <Link 
             to="/about" 
             className={cn(
               "text-sm font-medium hover:text-primary transition-colors",
@@ -72,17 +82,23 @@ export function Navbar() {
               <ShoppingCart className="h-5 w-5" />
             </Link>
           </Button>
-          <Button variant="ghost" size="icon" asChild>
-            <Link to="/profile">
-              <User className="h-5 w-5" />
-            </Link>
-          </Button>
-          <Button variant="default" size="sm" asChild>
-            <Link to="/login">
-              <LogIn className="h-4 w-4 mr-2" />
-              Login
-            </Link>
-          </Button>
+          
+          {!isLoading && (
+            user ? (
+              <Button variant="ghost" size="icon" asChild>
+                <Link to="/profile">
+                  <User className="h-5 w-5" />
+                </Link>
+              </Button>
+            ) : (
+              <Button variant="default" size="sm" asChild>
+                <Link to="/login">
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Login
+                </Link>
+              </Button>
+            )
+          )}
         </div>
       </div>
     </header>

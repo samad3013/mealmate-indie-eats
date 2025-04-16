@@ -13,6 +13,9 @@ import Meals from "./pages/Meals";
 import MealDetails from "./pages/MealDetails";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
+import Cooks from "./pages/Cooks";
+import CookHire from "./pages/CookHire";
 
 const queryClient = new QueryClient();
 
@@ -32,8 +35,11 @@ const App = () => (
             <Route path="/meals" element={<Meals />} />
             <Route path="/meals/:id" element={<MealDetails />} />
             <Route path="/about" element={<About />} />
+            <Route path="/cooks" element={<Cooks />} />
+            <Route path="/cooks/:cookId/hire" element={<CookHire />} />
             
-            {/* Protected Routes will go here */}
+            {/* Protected Routes */}
+            <Route path="/profile" element={<Profile />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
