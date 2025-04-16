@@ -6,11 +6,18 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, User, Clock, Star, ChefHat, Filter, X } from "lucide-react";
+import { MapPin, User, Clock, Star, ChefHat, Filter, X, DollarSign } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/AuthContext";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Cooks() {
   const [cooks, setCooks] = useState([]);
@@ -45,6 +52,7 @@ export default function Cooks() {
           throw error;
         }
 
+        console.log("Fetched cooks:", data);
         setCooks(data || []);
         
         // Extract unique locations
@@ -54,6 +62,7 @@ export default function Cooks() {
             .map(cook => cook.location_address)
         ));
         
+        console.log("Available locations:", uniqueLocations);
         setLocations(uniqueLocations);
       } catch (error) {
         console.error("Error fetching cooks:", error);
@@ -98,6 +107,14 @@ export default function Cooks() {
     navigate(`/cooks/${cookId}/hire`);
   };
 
+  const handleLocationChange = (value) => {
+    setSelectedLocation(value);
+  };
+
+  const clearLocationFilter = () => {
+    setSelectedLocation("");
+  };
+
   return (
     <Layout>
       <div className="container mx-auto py-12 px-4">
@@ -117,30 +134,25 @@ export default function Cooks() {
           </div>
           
           <div className="w-full md:w-64">
-            <div className="relative">
-              <select
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 appearance-none"
-              >
-                <option value="">All Locations</option>
-                {locations.map((location, index) => (
-                  <option key={index} value={location}>
+            <Select value={selectedLocation} onValueChange={handleLocationChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by location" />
+              </SelectTrigger>
+              <SelectContent>
+                {locations.map((location) => (
+                  <SelectItem key={location} value={location}>
                     {location}
-                  </option>
+                  </SelectItem>
                 ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                <Filter className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </div>
+              </SelectContent>
+            </Select>
           </div>
           
           {selectedLocation && (
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => setSelectedLocation("")}
+              onClick={clearLocationFilter}
               className="flex items-center"
             >
               Clear filter <X className="h-4 w-4 ml-1" />
@@ -204,7 +216,10 @@ export default function Cooks() {
                       </span>
                     </div>
                     
-                    <div className="font-medium">₹{cook.hourly_rate}/hour</div>
+                    <div className="font-medium flex items-center">
+                      <DollarSign className="h-4 w-4 text-green-600" />
+                      <span className="text-green-700">₹{cook.hourly_rate}/hour</span>
+                    </div>
                   </div>
                 </CardContent>
                 <CardFooter className="flex gap-2">
@@ -216,7 +231,7 @@ export default function Cooks() {
                     <Link to={`/cooks/${cook.id}`}>View Profile</Link>
                   </Button>
                   <Button 
-                    className="w-1/2"
+                    className="w-1/2 bg-purple-600 hover:bg-purple-700"
                     onClick={() => handleHire(cook.id)}
                   >
                     Hire Cook
