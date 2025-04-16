@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Cooks from "./pages/Cooks";
 import CookHire from "./pages/CookHire";
+import CookDetails from "./pages/CookDetails";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/meals/:id" element={<MealDetails />} />
             <Route path="/about" element={<About />} />
             <Route path="/cooks" element={<Cooks />} />
+            <Route path="/cooks/:cookId" element={<CookDetails />} />
             <Route path="/cooks/:cookId/hire" element={<CookHire />} />
             
             {/* Protected Routes */}

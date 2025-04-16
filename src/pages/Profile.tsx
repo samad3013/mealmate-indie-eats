@@ -27,24 +27,53 @@ const Profile = () => {
       if (!user) return;
       
       try {
+        // Try to fetch existing profile
         const { data, error } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", user.id)
-          .single();
+          .maybeSingle(); // Use maybeSingle instead of single to avoid error when no row exists
 
         if (error) {
           console.error("Error fetching profile:", error);
-          toast({
-            title: "Error fetching profile",
-            description: error.message,
-            variant: "destructive",
-          });
+          throw error;
+        }
+
+        // If no profile exists, create one
+        if (!data) {
+          console.log("No profile found, creating a new one");
+          const { error: insertError, data: newProfile } = await supabase
+            .from("profiles")
+            .insert({
+              id: user.id,
+              first_name: "",
+              last_name: "",
+              role: "customer" // Default role
+            })
+            .select("*")
+            .single();
+
+          if (insertError) {
+            console.error("Error creating profile:", insertError);
+            toast({
+              title: "Error creating profile",
+              description: insertError.message,
+              variant: "destructive",
+            });
+            throw insertError;
+          }
+          
+          setProfileData(newProfile);
         } else {
           setProfileData(data);
         }
       } catch (error) {
-        console.error("Profile fetch error:", error);
+        console.error("Profile fetch/create error:", error);
+        toast({
+          title: "Error with profile",
+          description: "There was a problem with your profile",
+          variant: "destructive",
+        });
       } finally {
         setLoadingProfile(false);
       }

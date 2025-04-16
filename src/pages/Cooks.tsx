@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, User, Clock, Star, ChefHat } from "lucide-react";
+import { MapPin, User, Clock, Star, ChefHat, Filter, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -16,6 +16,8 @@ export default function Cooks() {
   const [cooks, setCooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [locations, setLocations] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -44,6 +46,15 @@ export default function Cooks() {
         }
 
         setCooks(data || []);
+        
+        // Extract unique locations
+        const uniqueLocations = Array.from(new Set(
+          data
+            .filter(cook => cook.location_address)
+            .map(cook => cook.location_address)
+        ));
+        
+        setLocations(uniqueLocations);
       } catch (error) {
         console.error("Error fetching cooks:", error);
         toast({
@@ -61,12 +72,16 @@ export default function Cooks() {
 
   const filteredCooks = cooks.filter((cook) => {
     const searchLower = searchTerm.toLowerCase();
-    return (
+    const matchesSearch = 
       cook.profiles?.first_name?.toLowerCase().includes(searchLower) ||
       cook.profiles?.last_name?.toLowerCase().includes(searchLower) ||
       cook.speciality?.toLowerCase().includes(searchLower) ||
-      cook.location_address?.toLowerCase().includes(searchLower)
-    );
+      cook.location_address?.toLowerCase().includes(searchLower);
+    
+    const matchesLocation = !selectedLocation || 
+      cook.location_address === selectedLocation;
+    
+    return matchesSearch && matchesLocation;
   });
 
   const handleHire = (cookId) => {
@@ -91,14 +106,46 @@ export default function Cooks() {
           Browse our skilled cooks and hire them for your culinary needs
         </p>
         
-        <div className="mb-8">
-          <Input
-            type="text"
-            placeholder="Search by name, specialty, or location..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-md"
-          />
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="flex-1">
+            <Input
+              type="text"
+              placeholder="Search by name, specialty, or location..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="w-full md:w-64">
+            <div className="relative">
+              <select
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
+                className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 appearance-none"
+              >
+                <option value="">All Locations</option>
+                {locations.map((location, index) => (
+                  <option key={index} value={location}>
+                    {location}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
+          </div>
+          
+          {selectedLocation && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setSelectedLocation("")}
+              className="flex items-center"
+            >
+              Clear filter <X className="h-4 w-4 ml-1" />
+            </Button>
+          )}
         </div>
         
         {isLoading ? (

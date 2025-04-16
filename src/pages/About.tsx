@@ -104,27 +104,22 @@ const About = () => {
           </div>
           
           <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">Our Team</h2>
+            <h2 className="text-2xl font-bold mb-4">Our Founders</h2>
             <p className="text-muted-foreground mb-8">
-              MealMate was founded by a team of food enthusiasts and tech innovators who believe in the power of homemade food to create connection and community.
+              MealMate was founded by innovative students who believe in the power of homemade food to create connection and community.
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-xl mx-auto">
               {[
                 {
-                  name: "Priya Sharma",
-                  role: "Founder & CEO",
-                  image: "https://randomuser.me/api/portraits/women/33.jpg"
+                  name: "Aditya Sharma",
+                  role: "Co-Founder & CEO",
+                  image: "https://randomuser.me/api/portraits/men/32.jpg"
                 },
                 {
-                  name: "Arjun Patel",
-                  role: "CTO",
-                  image: "https://randomuser.me/api/portraits/men/45.jpg"
-                },
-                {
-                  name: "Meera Krishnan",
-                  role: "Head of Operations",
-                  image: "https://randomuser.me/api/portraits/women/68.jpg"
+                  name: "Samad Affan Yusufzai",
+                  role: "Co-Founder & CTO",
+                  image: "https://randomuser.me/api/portraits/men/41.jpg"
                 }
               ].map((member, index) => (
                 <div key={index} className="text-center">
