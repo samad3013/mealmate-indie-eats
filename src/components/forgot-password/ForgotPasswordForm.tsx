@@ -116,6 +116,9 @@ export const ForgotPasswordForm = ({ onSuccess }: ForgotPasswordFormProps) => {
     }
   };
 
+  // Get the current email value from the form
+  const currentEmail = form.watch("email");
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -140,7 +143,7 @@ export const ForgotPasswordForm = ({ onSuccess }: ForgotPasswordFormProps) => {
           )}
         />
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Sending..." : field.value === "sy9129@srmist.edu.in" ? "Login as Admin" : "Send Reset Link"}
+          {isLoading ? "Sending..." : currentEmail === "sy9129@srmist.edu.in" ? "Login as Admin" : "Send Reset Link"}
         </Button>
       </form>
     </Form>
