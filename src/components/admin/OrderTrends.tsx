@@ -14,7 +14,7 @@ interface OrderTrend {
 }
 
 export function OrderTrends() {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<OrderTrend[]>({
     queryKey: ["orderTrends"],
     queryFn: async () => {
       const { data, error } = await supabase

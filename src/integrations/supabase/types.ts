@@ -108,6 +108,13 @@ export type Database = {
             foreignKeyName: "cooks_id_fkey"
             columns: ["id"]
             isOneToOne: true
+            referencedRelation: "active_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cooks_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -206,6 +213,13 @@ export type Database = {
             referencedRelation: "meals"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "orders_meal_id_fkey"
+            columns: ["meal_id"]
+            isOneToOne: false
+            referencedRelation: "popular_meals"
+            referencedColumns: ["id"]
+          },
         ]
       }
       profiles: {
@@ -290,13 +304,83 @@ export type Database = {
             referencedRelation: "meals"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "reviews_meal_id_fkey"
+            columns: ["meal_id"]
+            isOneToOne: false
+            referencedRelation: "popular_meals"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      active_users: {
+        Row: {
+          created_at: string | null
+          first_name: string | null
+          id: string | null
+          last_name: string | null
+          last_order_date: string | null
+          order_count: number | null
+          role: string | null
+        }
+        Relationships: []
+      }
+      order_trends: {
+        Row: {
+          order_count: number | null
+          order_date: string | null
+          total_revenue: number | null
+        }
+        Relationships: []
+      }
+      popular_meals: {
+        Row: {
+          cook_id: string | null
+          id: string | null
+          order_count: number | null
+          price: number | null
+          rating: number | null
+          review_count: number | null
+          title: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      get_active_users: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          first_name: string
+          last_name: string
+          role: string
+          created_at: string
+          order_count: number
+          last_order_date: string
+        }[]
+      }
+      get_order_trends: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          order_date: string
+          order_count: number
+          total_revenue: number
+        }[]
+      }
+      get_popular_meals: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          title: string
+          price: number
+          cook_id: string
+          order_count: number
+          rating: number
+          review_count: number
+        }[]
+      }
       is_admin: {
         Args: { user_id: string }
         Returns: boolean

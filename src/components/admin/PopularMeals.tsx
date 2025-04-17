@@ -16,7 +16,7 @@ interface PopularMeal {
 }
 
 export function PopularMeals() {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<PopularMeal[]>({
     queryKey: ["popularMeals"],
     queryFn: async () => {
       const { data, error } = await supabase

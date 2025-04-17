@@ -18,7 +18,7 @@ interface ActiveUser {
 }
 
 export function ActiveUsers() {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<ActiveUser[]>({
     queryKey: ["activeUsers"],
     queryFn: async () => {
       const { data, error } = await supabase
