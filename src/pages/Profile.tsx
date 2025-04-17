@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout";
@@ -6,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Settings, LogOut, Loader2 } from "lucide-react";
+import { User, Settings, LogOut, Loader2, LayoutDashboard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 
@@ -17,7 +16,6 @@ const Profile = () => {
   const [loadingProfile, setLoadingProfile] = useState(true);
 
   useEffect(() => {
-    // Redirect if not logged in
     if (!isLoading && !user) {
       navigate("/login");
       return;
@@ -27,7 +25,6 @@ const Profile = () => {
       if (!user) return;
       
       try {
-        // Try to fetch existing profile
         const { data, error } = await supabase
           .from("profiles")
           .select("*")
@@ -39,7 +36,6 @@ const Profile = () => {
           throw error;
         }
 
-        // If no profile exists, redirect to edit page
         if (!data) {
           navigate("/profile/edit");
           return;
@@ -47,7 +43,6 @@ const Profile = () => {
         
         setProfileData(data);
         
-        // If user is a cook, fetch cook details
         if (data.role === "cook") {
           const { data: cookData, error: cookError } = await supabase
             .from("cooks")
@@ -122,7 +117,11 @@ const Profile = () => {
                 </Avatar>
                 <CardTitle>{profileData?.first_name || ""} {profileData?.last_name || ""}</CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">
-                  {profileData?.role === "cook" ? "Cook" : "Customer"}
+                  {profileData?.role === "admin" 
+                    ? "Admin" 
+                    : profileData?.role === "cook" 
+                      ? "Cook" 
+                      : "Customer"}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -142,6 +141,12 @@ const Profile = () => {
                   <Settings className="w-4 h-4 mr-2" />
                   Edit Profile
                 </Button>
+                {profileData?.role === "admin" && (
+                  <Button variant="outline" className="w-full" onClick={() => navigate("/admin")}>
+                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                    Admin Dashboard
+                  </Button>
+                )}
                 <Button variant="destructive" className="w-full" onClick={handleSignOut}>
                   <LogOut className="w-4 h-4 mr-2" />
                   Sign Out
