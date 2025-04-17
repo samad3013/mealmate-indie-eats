@@ -58,22 +58,7 @@ export type Database = {
           total_amount?: number
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "bookings_cook_id_fkey"
-            columns: ["cook_id"]
-            isOneToOne: false
-            referencedRelation: "cooks"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "bookings_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       cooks: {
         Row: {
@@ -174,15 +159,7 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "meals_cook_id_fkey"
-            columns: ["cook_id"]
-            isOneToOne: false
-            referencedRelation: "cooks"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       orders: {
         Row: {
@@ -222,13 +199,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "orders_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "orders_meal_id_fkey"
             columns: ["meal_id"]
@@ -314,24 +284,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "reviews_cook_id_fkey"
-            columns: ["cook_id"]
-            isOneToOne: false
-            referencedRelation: "cooks"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "reviews_meal_id_fkey"
             columns: ["meal_id"]
             isOneToOne: false
             referencedRelation: "meals"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_reviewer_id_fkey"
-            columns: ["reviewer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

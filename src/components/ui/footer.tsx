@@ -64,17 +64,17 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/how-it-works" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/about#how-it-works" className="text-muted-foreground hover:text-primary transition-colors">
                   How It Works
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/contact#faq" className="text-muted-foreground hover:text-primary transition-colors">
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link to="/student-offers" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="#" className="text-muted-foreground hover:text-primary cursor-not-allowed opacity-60">
                   Student Offers
                 </Link>
               </li>
@@ -90,17 +90,17 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/cook-resources" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="#" className="text-muted-foreground hover:text-primary cursor-not-allowed opacity-60">
                   Resources
                 </Link>
               </li>
               <li>
-                <Link to="/cook-guidelines" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="#" className="text-muted-foreground hover:text-primary cursor-not-allowed opacity-60">
                   Guidelines
                 </Link>
               </li>
               <li>
-                <Link to="/success-stories" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="#" className="text-muted-foreground hover:text-primary cursor-not-allowed opacity-60">
                   Success Stories
                 </Link>
               </li>
@@ -113,13 +113,13 @@ export function Footer() {
             © {new Date().getFullYear()} MealMate. All rights reserved.
           </p>
           <div className="flex space-x-6">
-            <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <Link to="#" className="text-sm text-muted-foreground hover:text-primary cursor-not-allowed opacity-60">
               Terms of Service
             </Link>
-            <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <Link to="#" className="text-sm text-muted-foreground hover:text-primary cursor-not-allowed opacity-60">
               Privacy Policy
             </Link>
-            <Link to="/cookies" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <Link to="#" className="text-sm text-muted-foreground hover:text-primary cursor-not-allowed opacity-60">
               Cookie Policy
             </Link>
           </div>
