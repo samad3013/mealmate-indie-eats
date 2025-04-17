@@ -9,8 +9,8 @@ import { User, ShoppingCart } from "lucide-react";
 
 interface ActiveUser {
   id: string;
-  first_name: string;
-  last_name: string;
+  first_name: string | null;
+  last_name: string | null;
   role: string;
   created_at: string;
   order_count: number;
@@ -21,9 +21,9 @@ export function ActiveUsers() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["activeUsers"],
     queryFn: async () => {
+      // Use rpc to query the view instead of directly accessing it
       const { data, error } = await supabase
-        .from("active_users")
-        .select("*")
+        .rpc('get_active_users', {}, { count: 'exact' })
         .limit(5);
         
       if (error) throw error;

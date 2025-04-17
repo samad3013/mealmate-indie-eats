@@ -11,17 +11,17 @@ interface PopularMeal {
   title: string;
   price: number;
   order_count: number;
-  rating: number;
-  review_count: number;
+  rating: number | null;
+  review_count: number | null;
 }
 
 export function PopularMeals() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["popularMeals"],
     queryFn: async () => {
+      // Use rpc to query the view instead of directly accessing it
       const { data, error } = await supabase
-        .from("popular_meals")
-        .select("*")
+        .rpc('get_popular_meals', {}, { count: 'exact' })
         .limit(5);
         
       if (error) throw error;
