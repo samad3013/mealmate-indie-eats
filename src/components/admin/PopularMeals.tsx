@@ -19,9 +19,8 @@ export function PopularMeals() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["popularMeals"],
     queryFn: async () => {
-      // Use rpc to query the view instead of directly accessing it
       const { data, error } = await supabase
-        .rpc('get_popular_meals', {}, { count: 'exact' })
+        .rpc('get_popular_meals')
         .limit(5);
         
       if (error) throw error;

@@ -17,9 +17,8 @@ export function OrderTrends() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["orderTrends"],
     queryFn: async () => {
-      // Use rpc to query the view instead of directly accessing it
       const { data, error } = await supabase
-        .rpc('get_order_trends', {}, { count: 'exact' })
+        .rpc('get_order_trends')
         .limit(14); // Last 14 days
         
       if (error) throw error;

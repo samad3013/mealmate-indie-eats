@@ -21,9 +21,8 @@ export function ActiveUsers() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["activeUsers"],
     queryFn: async () => {
-      // Use rpc to query the view instead of directly accessing it
       const { data, error } = await supabase
-        .rpc('get_active_users', {}, { count: 'exact' })
+        .rpc('get_active_users')
         .limit(5);
         
       if (error) throw error;
