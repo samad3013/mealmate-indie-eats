@@ -3,9 +3,16 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { format } from "date-fns";
 import { ChartLine, TrendingUp } from "lucide-react";
+import { 
+  ChartContainer, 
+  ChartTooltip, 
+  ChartTooltipContent, 
+  ChartLegend,
+  ChartLegendContent
+} from "@/components/ui/chart";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 interface OrderTrend {
   order_date: string;
@@ -29,6 +36,24 @@ export function OrderTrends() {
       })).reverse(); // Reverse to get chronological order
     },
   });
+
+  // Chart configuration
+  const chartConfig = {
+    orders: {
+      label: "Orders",
+      theme: {
+        light: "#4f46e5", // Indigo color for orders
+        dark: "#818cf8"
+      }
+    },
+    revenue: {
+      label: "Revenue (₹)",
+      theme: {
+        light: "#16a34a", // Green color for revenue
+        dark: "#4ade80"
+      }
+    }
+  };
 
   if (error) {
     return (
@@ -64,7 +89,10 @@ export function OrderTrends() {
         ) : (
           <div className="h-72">
             {data && data.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
+              <ChartContainer
+                config={chartConfig}
+                className="w-full"
+              >
                 <LineChart
                   data={data}
                   margin={{
@@ -78,25 +106,29 @@ export function OrderTrends() {
                   <XAxis dataKey="date" />
                   <YAxis yAxisId="left" />
                   <YAxis yAxisId="right" orientation="right" />
-                  <Tooltip />
-                  <Legend />
+                  
                   <Line
                     yAxisId="left"
                     type="monotone"
                     dataKey="order_count"
-                    name="Orders"
-                    stroke="#4f46e5"
+                    name="orders"
                     activeDot={{ r: 8 }}
                   />
                   <Line
                     yAxisId="right" 
                     type="monotone" 
                     dataKey="total_revenue" 
-                    name="Revenue (₹)" 
-                    stroke="#16a34a" 
+                    name="revenue" 
+                  />
+                  
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                  />
+                  <ChartLegend 
+                    content={<ChartLegendContent />}
                   />
                 </LineChart>
-              </ResponsiveContainer>
+              </ChartContainer>
             ) : (
               <div className="flex h-full items-center justify-center">
                 <p className="text-muted-foreground">No order data available</p>

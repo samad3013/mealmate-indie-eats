@@ -6,8 +6,10 @@ import { StatsOverview } from "@/components/admin/StatsOverview";
 import { PopularMeals } from "@/components/admin/PopularMeals";
 import { ActiveUsers } from "@/components/admin/ActiveUsers";
 import { OrderTrends } from "@/components/admin/OrderTrends";
-import { Loader2 } from "lucide-react";
+import { Loader2, BarChart } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const AdminDashboard = () => {
   const { isAdmin, loading } = useAdmin();
@@ -27,7 +29,15 @@ const AdminDashboard = () => {
   return (
     <Layout>
       <div className="container mx-auto py-8">
-        <h1 className="mb-6 text-3xl font-bold">Admin Dashboard</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <Button asChild variant="outline" className="gap-2">
+            <Link to="/admin/analytics">
+              <BarChart className="h-4 w-4" />
+              View Analytics
+            </Link>
+          </Button>
+        </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList>
