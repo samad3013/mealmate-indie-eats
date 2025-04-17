@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Settings, LogOut } from "lucide-react";
+import { User, Settings, LogOut, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 
@@ -32,43 +32,37 @@ const Profile = () => {
           .from("profiles")
           .select("*")
           .eq("id", user.id)
-          .maybeSingle(); // Use maybeSingle instead of single to avoid error when no row exists
+          .maybeSingle();
 
         if (error) {
           console.error("Error fetching profile:", error);
           throw error;
         }
 
-        // If no profile exists, create one
+        // If no profile exists, redirect to edit page
         if (!data) {
-          console.log("No profile found, creating a new one");
-          const { error: insertError, data: newProfile } = await supabase
-            .from("profiles")
-            .insert({
-              id: user.id,
-              first_name: "",
-              last_name: "",
-              role: "customer" // Default role
-            })
+          navigate("/profile/edit");
+          return;
+        }
+        
+        setProfileData(data);
+        
+        // If user is a cook, fetch cook details
+        if (data.role === "cook") {
+          const { data: cookData, error: cookError } = await supabase
+            .from("cooks")
             .select("*")
-            .single();
-
-          if (insertError) {
-            console.error("Error creating profile:", insertError);
-            toast({
-              title: "Error creating profile",
-              description: insertError.message,
-              variant: "destructive",
-            });
-            throw insertError;
+            .eq("id", user.id)
+            .maybeSingle();
+            
+          if (cookError) {
+            console.error("Error fetching cook details:", cookError);
+          } else if (cookData) {
+            setProfileData(prev => ({ ...prev, ...cookData }));
           }
-          
-          setProfileData(newProfile);
-        } else {
-          setProfileData(data);
         }
       } catch (error) {
-        console.error("Profile fetch/create error:", error);
+        console.error("Profile fetch error:", error);
         toast({
           title: "Error with profile",
           description: "There was a problem with your profile",
@@ -104,7 +98,8 @@ const Profile = () => {
     return (
       <Layout>
         <div className="container mx-auto py-20 text-center">
-          <p>Loading profile...</p>
+          <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+          <p className="mt-4">Loading profile...</p>
         </div>
       </Layout>
     );
