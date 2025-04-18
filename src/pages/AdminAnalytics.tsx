@@ -1,7 +1,6 @@
-
 import { Layout } from "@/components/layout";
 import { useAdmin } from "@/hooks/use-admin";
-import { Loader2, BarChart4, LineChart, UsersRound, Award } from "lucide-react";
+import { BarChart4, LineChart, UsersRound, Award, TrendingUp } from "lucide-react";
 import { StatsOverview } from "@/components/admin/StatsOverview";
 import { PopularMeals } from "@/components/admin/PopularMeals";
 import { ActiveUsers } from "@/components/admin/ActiveUsers";

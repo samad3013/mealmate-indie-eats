@@ -1,73 +1,98 @@
-# Welcome to your Lovable project
 
-## Project info
+# Cook Booking Platform
 
-**URL**: https://lovable.dev/projects/2f5ce680-0721-4058-928b-fea23a13dec8
+A platform that connects users with professional cooks for personalized dining experiences. The platform includes both customer and cook interfaces, along with an admin dashboard for monitoring and managing the platform.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- User Authentication (Customers, Cooks, Admins)
+- Profile Management
+- Meal Listings and Management
+- Booking System
+- Admin Dashboard with Analytics
+- Real-time Data Visualization
 
-**Use Lovable**
+## Prerequisites
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/2f5ce680-0721-4058-928b-fea23a13dec8) and start prompting.
+Before you begin, ensure you have the following installed:
+- Node.js (v18 or higher)
+- npm (v9 or higher)
 
-Changes made via Lovable will be committed automatically to this repo.
+## Installation
 
-**Use your preferred IDE**
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd cook-booking-platform
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+2. Install dependencies:
+```bash
+npm install
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Environment Variables
 
-**Use GitHub Codespaces**
+Create a `.env` file in the root directory with the following variables:
+```
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Project Structure
 
-## What technologies are used for this project?
+```
+src/
+├── components/     # Reusable UI components
+├── pages/         # Page components
+├── hooks/         # Custom React hooks
+├── context/       # React context providers
+├── lib/          # Utility functions
+└── integrations/ # External service integrations
+```
 
-This project is built with:
+## Admin Access
 
-- Vite
+To access the admin dashboard:
+1. Log in with admin credentials
+2. Navigate to '/admin' or click the Admin Dashboard link in the profile menu
+3. Access analytics at '/admin/analytics'
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run type-check` - Run TypeScript type checking
+
+## Built With
+
+- React 18
 - TypeScript
-- React
-- shadcn-ui
+- Vite
 - Tailwind CSS
+- shadcn/ui
+- Supabase
+- Tanstack Query
+- Recharts
+- Lucide Icons
 
-## How can I deploy this project?
+## Contributing
 
-Simply open [Lovable](https://lovable.dev/projects/2f5ce680-0721-4058-928b-fea23a13dec8) and click on Share -> Publish.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## Can I connect a custom domain to my Lovable project?
+## License
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is licensed under the MIT License - see the LICENSE.md file for details

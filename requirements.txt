@@ -1,0 +1,26 @@
+
+# Node.js Requirements
+Node.js >= 18.0.0
+npm >= 9.0.0
+
+# Runtime Dependencies
+@hookform/resolvers >= 3.9.0
+@radix-ui/* >= 1.1.0
+@supabase/supabase-js >= 2.49.4
+@tanstack/react-query >= 5.56.2
+class-variance-authority >= 0.7.1
+date-fns >= 3.6.0
+lucide-react >= 0.462.0
+react >= 18.3.1
+react-dom >= 18.3.1
+react-hook-form >= 7.53.0
+react-router-dom >= 6.26.2
+recharts >= 2.12.7
+tailwind-merge >= 2.5.2
+zod >= 3.23.8
+
+# Development Dependencies
+TypeScript >= 5.0.0
+Vite >= 5.0.0
+TailwindCSS >= 3.0.0
+ESLint >= 8.0.0
