@@ -1,6 +1,7 @@
+
 import { Layout } from "@/components/layout";
 import { useAdmin } from "@/hooks/use-admin";
-import { BarChart4, LineChart, UsersRound, Award, TrendingUp } from "lucide-react";
+import { BarChart4, LineChart, UsersRound, Award, TrendingUp, Loader } from "lucide-react";
 import { StatsOverview } from "@/components/admin/StatsOverview";
 import { PopularMeals } from "@/components/admin/PopularMeals";
 import { ActiveUsers } from "@/components/admin/ActiveUsers";
@@ -20,7 +21,7 @@ const AdminAnalytics = () => {
     return (
       <Layout>
         <div className="container mx-auto py-20 text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+          <Loader className="h-8 w-8 animate-spin mx-auto" />
           <p className="mt-4">Checking admin privileges...</p>
         </div>
       </Layout>
