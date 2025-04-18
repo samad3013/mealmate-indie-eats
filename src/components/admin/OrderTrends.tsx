@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
-import { ChartLine, TrendingUp } from "lucide-react";
+import { ChartLine } from "lucide-react";
 import { 
   ChartContainer, 
   ChartTooltip, 
@@ -12,7 +12,7 @@ import {
   ChartLegend,
   ChartLegendContent
 } from "@/components/ui/chart";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 interface OrderTrend {
   order_date: string;
@@ -33,6 +33,7 @@ export function OrderTrends() {
       return (data as OrderTrend[]).map(trend => ({
         ...trend,
         date: format(new Date(trend.order_date), 'MMM dd'),
+        formattedRevenue: `₹${trend.total_revenue}`
       })).reverse(); // Reverse to get chronological order
     },
   });
@@ -57,7 +58,7 @@ export function OrderTrends() {
 
   if (error) {
     return (
-      <Card className="col-span-2">
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ChartLine className="h-5 w-5 text-blue-500" />
@@ -73,61 +74,54 @@ export function OrderTrends() {
   }
 
   return (
-    <Card className="col-span-2">
+    <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <ChartLine className="h-5 w-5 text-blue-500" />
           Order Trends
         </CardTitle>
-        <CardDescription>Order volumes and revenue over time</CardDescription>
+        <CardDescription>Daily order volume and revenue</CardDescription>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="h-72">
+          <div className="h-[400px]">
             <Skeleton className="h-full w-full" />
           </div>
         ) : (
-          <div className="h-72">
+          <div className="h-[400px]">
             {data && data.length > 0 ? (
-              <ChartContainer
-                config={chartConfig}
-                className="w-full"
-              >
-                <LineChart
-                  data={data}
-                  margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis yAxisId="left" />
-                  <YAxis yAxisId="right" orientation="right" />
-                  
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="order_count"
-                    name="orders"
-                    activeDot={{ r: 8 }}
-                  />
-                  <Line
-                    yAxisId="right" 
-                    type="monotone" 
-                    dataKey="total_revenue" 
-                    name="revenue" 
-                  />
-                  
-                  <ChartTooltip 
-                    content={<ChartTooltipContent />}
-                  />
-                  <ChartLegend 
-                    content={<ChartLegendContent />}
-                  />
-                </LineChart>
+              <ChartContainer config={chartConfig}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={data}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis yAxisId="left" />
+                    <YAxis yAxisId="right" orientation="right" />
+                    
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="order_count"
+                      stroke="#4f46e5"
+                      name="Orders"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      activeDot={{ r: 8 }}
+                    />
+                    <Line
+                      yAxisId="right" 
+                      type="monotone" 
+                      dataKey="total_revenue"
+                      stroke="#16a34a"
+                      name="Revenue" 
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                    />
+                    
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                  </LineChart>
+                </ResponsiveContainer>
               </ChartContainer>
             ) : (
               <div className="flex h-full items-center justify-center">

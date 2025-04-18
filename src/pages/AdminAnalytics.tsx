@@ -16,7 +16,6 @@ const AdminAnalytics = () => {
   const { isAdmin, loading } = useAdmin();
   const navigate = useNavigate();
 
-  // If not loading and not admin, the hook will redirect, so we don't need additional checks here
   if (loading) {
     return (
       <Layout>
@@ -32,7 +31,7 @@ const AdminAnalytics = () => {
     <Layout>
       <div className="container mx-auto py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">Admin Analytics</h1>
+          <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
           <Button variant="outline" onClick={() => navigate("/admin")}>
             Back to Dashboard
           </Button>
@@ -58,64 +57,60 @@ const AdminAnalytics = () => {
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="orders" className="space-y-6">
-            <OrderTrends />
-            
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl">Order Completion Rate</CardTitle>
-                  <CardDescription>Percentage of completed orders</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Completed</span>
-                      <span className="text-sm text-green-600 font-medium">84%</span>
+          <TabsContent value="orders">
+            <div className="grid gap-6">
+              <OrderTrends />
+              
+              <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xl">Order Completion Rate</CardTitle>
+                    <CardDescription>Last 30 days</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Completed</span>
+                        <span className="text-sm text-green-600 font-medium">84%</span>
+                      </div>
+                      <Progress value={84} className="h-2" />
                     </div>
-                    <Progress value={84} className="h-2" />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl">Average Order Value</CardTitle>
-                  <CardDescription>Per month</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">₹235</div>
-                  <p className="text-sm text-green-600 flex items-center mt-1">
-                    <TrendingUp className="h-4 w-4 mr-1" /> 12% increase
-                  </p>
-                </CardContent>
-              </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xl">Average Order Value</CardTitle>
+                    <CardDescription>Per order</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">₹235</div>
+                    <p className="text-sm text-green-600 flex items-center mt-1">
+                      <TrendingUp className="h-4 w-4 mr-1" /> 12% increase
+                    </p>
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl">Order Frequency</CardTitle>
-                  <CardDescription>Orders per user per month</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">3.2</div>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Based on active users
-                  </p>
-                </CardContent>
-              </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xl">Customer Satisfaction</CardTitle>
+                    <CardDescription>Based on reviews</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">4.8/5</div>
+                    <Progress value={96} className="h-2 mt-2" />
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
           
           <TabsContent value="meals">
-            <div className="grid gap-4 grid-cols-1">
-              <PopularMeals />
-            </div>
+            <PopularMeals />
           </TabsContent>
           
           <TabsContent value="users">
-            <div className="grid gap-4 grid-cols-1">
-              <ActiveUsers />
-            </div>
+            <ActiveUsers />
           </TabsContent>
         </Tabs>
       </div>

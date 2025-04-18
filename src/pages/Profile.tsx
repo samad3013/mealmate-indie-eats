@@ -145,13 +145,21 @@ const Profile = () => {
                 </Button>
                 {profileData?.role === "admin" && (
                   <>
-                    <Button variant="outline" className="w-full" onClick={() => navigate("/admin")}>
+                    <Button 
+                      variant="default" 
+                      className="w-full bg-blue-500 hover:bg-blue-600" 
+                      onClick={() => navigate("/admin")}
+                    >
                       <LayoutDashboard className="w-4 h-4 mr-2" />
                       Admin Dashboard
                     </Button>
-                    <Button variant="outline" className="w-full" onClick={() => navigate("/admin/analytics")}>
+                    <Button 
+                      variant="default" 
+                      className="w-full bg-green-500 hover:bg-green-600" 
+                      onClick={() => navigate("/admin/analytics")}
+                    >
                       <BarChart className="w-4 h-4 mr-2" />
-                      Admin Analytics
+                      View Analytics
                     </Button>
                   </>
                 )}
