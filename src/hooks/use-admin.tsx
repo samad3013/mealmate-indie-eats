@@ -30,6 +30,7 @@ export const useAdmin = () => {
       }
 
       try {
+        console.log("Checking admin status for user:", user.id);
         // Fetch the user's profile
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
@@ -38,8 +39,11 @@ export const useAdmin = () => {
           .single();
 
         if (profileError) {
+          console.error("Error fetching profile:", profileError);
           throw profileError;
         }
+
+        console.log("User role from profile:", profile?.role);
 
         if (profile?.role !== "admin") {
           // Not an admin, redirect to home
@@ -51,6 +55,7 @@ export const useAdmin = () => {
           });
           setIsAdmin(false);
         } else {
+          console.log("User confirmed as admin");
           setIsAdmin(true);
         }
       } catch (error) {

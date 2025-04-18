@@ -2,14 +2,16 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { UtensilsCrossed, User, ShoppingCart, LogIn, LogOut, ChefHat } from "lucide-react";
+import { UtensilsCrossed, User, ShoppingCart, LogIn, LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 export function Navbar() {
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, isLoading } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
   
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +25,36 @@ export function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!user) {
+        setIsAdmin(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+
+        if (error) {
+          console.error("Error checking admin status:", error);
+          setIsAdmin(false);
+          return;
+        }
+
+        setIsAdmin(data?.role === "admin");
+      } catch (error) {
+        console.error("Error:", error);
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdminStatus();
+  }, [user]);
 
   return (
     <header className={cn(
@@ -74,6 +106,28 @@ export function Navbar() {
           >
             About Us
           </Link>
+          {isAdmin && (
+            <>
+              <Link 
+                to="/admin" 
+                className={cn(
+                  "text-sm font-medium hover:text-primary transition-colors",
+                  location.pathname.startsWith("/admin") && !location.pathname.includes("/analytics") && "text-primary"
+                )}
+              >
+                Admin Dashboard
+              </Link>
+              <Link 
+                to="/admin/analytics" 
+                className={cn(
+                  "text-sm font-medium hover:text-primary transition-colors",
+                  location.pathname.includes("/analytics") && "text-primary"
+                )}
+              >
+                Analytics
+              </Link>
+            </>
+          )}
         </nav>
         
         <div className="flex items-center gap-3">
@@ -98,6 +152,14 @@ export function Navbar() {
                 </Link>
               </Button>
             )
+          )}
+
+          {isAdmin && (
+            <Button variant="ghost" size="icon" asChild>
+              <Link to="/admin">
+                <LayoutDashboard className="h-5 w-5" />
+              </Link>
+            </Button>
           )}
         </div>
       </div>

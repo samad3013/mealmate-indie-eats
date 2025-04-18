@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout";
@@ -5,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Settings, LogOut, Loader2, LayoutDashboard } from "lucide-react";
+import { User, Settings, LogOut, Loader2, LayoutDashboard, BarChart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 
@@ -42,6 +43,7 @@ const Profile = () => {
         }
         
         setProfileData(data);
+        console.log("Profile data loaded:", data); // Debug log to check role
         
         if (data.role === "cook") {
           const { data: cookData, error: cookError } = await supabase
@@ -142,10 +144,16 @@ const Profile = () => {
                   Edit Profile
                 </Button>
                 {profileData?.role === "admin" && (
-                  <Button variant="outline" className="w-full" onClick={() => navigate("/admin")}>
-                    <LayoutDashboard className="w-4 h-4 mr-2" />
-                    Admin Dashboard
-                  </Button>
+                  <>
+                    <Button variant="outline" className="w-full" onClick={() => navigate("/admin")}>
+                      <LayoutDashboard className="w-4 h-4 mr-2" />
+                      Admin Dashboard
+                    </Button>
+                    <Button variant="outline" className="w-full" onClick={() => navigate("/admin/analytics")}>
+                      <BarChart className="w-4 h-4 mr-2" />
+                      Admin Analytics
+                    </Button>
+                  </>
                 )}
                 <Button variant="destructive" className="w-full" onClick={handleSignOut}>
                   <LogOut className="w-4 h-4 mr-2" />
