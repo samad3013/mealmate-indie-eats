@@ -17,6 +17,7 @@ export function OrdersManagement() {
   const { data: orders, isLoading } = useQuery({
     queryKey: ["adminOrders"],
     queryFn: async () => {
+      // Fix the query to properly join orders and profiles
       const { data, error } = await supabase
         .from("orders")
         .select(`
@@ -25,7 +26,7 @@ export function OrdersManagement() {
             title,
             price
           ),
-          profiles!orders_customer_id_fkey (
+          profiles (
             first_name,
             last_name
           )
