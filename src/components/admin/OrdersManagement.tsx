@@ -17,7 +17,7 @@ export function OrdersManagement() {
   const { data: orders, isLoading } = useQuery({
     queryKey: ["adminOrders"],
     queryFn: async () => {
-      // We need to manually specify the relationship between orders.customer_id and profiles.id
+      // First, let's fetch the customer data separately to avoid relationship errors
       const { data, error } = await supabase
         .from("orders")
         .select(`
@@ -31,17 +31,32 @@ export function OrdersManagement() {
           meals (
             title,
             price
-          ),
-          profiles!orders_customer_id_fkey (
-            first_name,
-            last_name
           )
         `)
         .order('created_at', { ascending: false })
         .limit(50);
         
       if (error) throw error;
-      return data;
+
+      // Now, let's fetch the customer profiles for these orders
+      const customerIds = data.map(order => order.customer_id);
+      const { data: customerProfiles, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, first_name, last_name")
+        .in('id', customerIds);
+
+      if (profilesError) throw profilesError;
+
+      // Combine the data
+      const ordersWithCustomers = data.map(order => {
+        const customerProfile = customerProfiles.find(profile => profile.id === order.customer_id);
+        return {
+          ...order,
+          customer: customerProfile || { first_name: "Unknown", last_name: "Customer" }
+        };
+      });
+
+      return ordersWithCustomers;
     },
   });
 
@@ -77,7 +92,7 @@ export function OrdersManagement() {
               {orders?.map((order) => (
                 <TableRow key={order.id}>
                   <TableCell className="font-medium">
-                    {order.profiles?.first_name} {order.profiles?.last_name}
+                    {order.customer?.first_name} {order.customer?.last_name}
                   </TableCell>
                   <TableCell>{order.meals?.title}</TableCell>
                   <TableCell>{order.quantity}</TableCell>
