@@ -17,16 +17,22 @@ export function OrdersManagement() {
   const { data: orders, isLoading } = useQuery({
     queryKey: ["adminOrders"],
     queryFn: async () => {
-      // Fix the query to properly join orders and profiles
+      // We need to manually specify the relationship between orders.customer_id and profiles.id
       const { data, error } = await supabase
         .from("orders")
         .select(`
-          *,
+          id,
+          meal_id,
+          customer_id,
+          quantity,
+          total_amount,
+          status,
+          created_at,
           meals (
             title,
             price
           ),
-          profiles (
+          profiles!orders_customer_id_fkey (
             first_name,
             last_name
           )
